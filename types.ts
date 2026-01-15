@@ -3,13 +3,13 @@ export interface Book {
   id: string;
   author: string;
   title: string;
-  bookCategory: string; // Manually entered type (e.g., 'Badiiy adabiyot', 'Darslik')
-  isbn?: string; 
-  pages: number; // New field: Beti
+  bookCategory: string; // Turi (Badiiy, Darslik va h.k.)
+  isbn: string; // ISBN kodi (endilikda majburiy)
+  pages: number; // Beti
   department: string; // Bo'limi
   titlesCount: number; // Nomda
   copiesCount: number; // Nusxada
-  pricePerCopy: number; // Summasi
+  pricePerCopy: number; // Summasi (dona)
   totalSum: number; // Jami summasi
 }
 
