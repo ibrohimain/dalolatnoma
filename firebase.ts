@@ -47,3 +47,12 @@ export const fetchDalolatnomalar = async () => {
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
+
+export const fetchDalolatnomaById = async (id: string) => {
+  const docRef = doc(db, "dalolatnomalar", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  }
+  return null;
+};

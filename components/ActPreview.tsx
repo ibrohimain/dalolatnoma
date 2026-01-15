@@ -29,9 +29,9 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
 
   const giverTypeLabel = act.userType === 'ichki' ? 'kafedrasi' : 'tashkiloti/vakili';
 
-  // Verification QR data
-  const qrData = `JizPI-ARM-ACT-${act.actNumber}-${act.date}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(qrData)}`;
+  // Verification QR pointing to internal URL
+  const verifyUrl = `${window.location.origin}${window.location.pathname}?verify=${act.id}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verifyUrl)}`;
 
   return (
     <div className="bg-white p-4 md:p-10 rounded-lg shadow-inner max-w-[210mm] mx-auto overflow-hidden border mb-10 animate-fade-in no-print-margin">
@@ -160,11 +160,11 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
               <div className="text-right">
                  <p className="text-[11px] font-black text-blue-900 uppercase tracking-widest leading-none mb-1">Elektron tasdiqlangan</p>
                  <p className="text-[9px] text-gray-500 font-bold uppercase leading-none">JizPI ARM Axborot Tizimi orqali</p>
-                 <p className="text-[8px] text-gray-400 mt-2 font-mono">Hujjat ID: {act.id.substring(0,8).toUpperCase()}</p>
+                 <p className="text-[8px] text-gray-400 mt-2 font-mono italic">Haqiqiylikni tekshirish uchun skanerlang</p>
               </div>
-              <img src={qrUrl} alt="QR Verification" className="w-20 h-20 border p-1 bg-white" />
+              <img src={qrUrl} alt="QR Verification" className="w-20 h-20 border p-1 bg-white shadow-sm" />
            </div>
-           <p className="text-[8px] text-gray-400 italic mt-4 text-center">Ushbu hujjat elektron shaklda shakllantirilgan va asliga to'g'ri keladi.</p>
+           <p className="text-[8px] text-gray-400 italic mt-4 text-center">Ushbu hujjat elektron shaklda shakllantirilgan va tizimda qayd etilgan.</p>
         </div>
       </div>
     </div>

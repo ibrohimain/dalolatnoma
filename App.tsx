@@ -5,14 +5,26 @@ import ActList from './components/ActList';
 import ActForm from './components/ActForm';
 import ActPreview from './components/ActPreview';
 import Dashboard from './components/Dashboard';
+// import VerificationView from './components/VerificationView';
 import { Dalolatnoma } from './types';
 import { fetchDalolatnomalar } from './firebase';
+import VerificationView from './components/components/VerificationView';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'stats'>('list');
   const [selectedAct, setSelectedAct] = useState<Dalolatnoma | null>(null);
   const [editingAct, setEditingAct] = useState<Dalolatnoma | null>(null);
   const [allActs, setAllActs] = useState<Dalolatnoma[]>([]);
+  const [verifyId, setVerifyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for verification ID in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const verify = urlParams.get('verify');
+    if (verify) {
+      setVerifyId(verify);
+    }
+  }, []);
 
   const loadAllActs = async () => {
     const data = await fetchDalolatnomalar();
@@ -39,6 +51,15 @@ const App: React.FC = () => {
     setEditingAct(null);
     setActiveTab('list');
   };
+
+  const clearVerify = () => {
+    setVerifyId(null);
+    window.history.replaceState({}, '', window.location.pathname);
+  };
+
+  if (verifyId) {
+    return <VerificationView actId={verifyId} onClose={clearVerify} />;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
