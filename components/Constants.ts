@@ -1,0 +1,28 @@
+
+export const DEPARTMENTS = [
+  "Transport vositalari muhandisligi",
+  "Transport logistikasi",
+  "Umumtexnika fanlari",
+  "Ijtimoiy fanlar",
+  "Qurilish muhandisligi",
+  "Yo‘l muhandisligi",
+  "Qurilish materiallari va konstruksiyalari",
+  "Muhandislik kommunikatsiyalari",
+  "Kimyoviy texnologiya",
+  "Kimyo",
+  "Arxitekturaviy loyihalash",
+  "O‘zbek va xorijiy tillar",
+  "To‘qimqchilik mahsulotlari texnologiyasi",
+  "Tabiiy tolalar va matoga ishlov berish texnologiyalari",
+  "Qishloq xo‘jalik va oziq – ovqat texnika texnologiyalari",
+  "Ekologiya va mehnat muxofazasi",
+  "Energetika va elektr texnologiyasi",
+  "Metrologiya va standartlashtirish",
+  "Fizika",
+  "Oliy matemetika",
+  "Kompyuter va dasturiy injiniring",
+  "Jismoniy tarbiya",
+  "Radioelektronika",
+  "Iqtisodiyot va menejment",
+  "Boshqa"
+];
