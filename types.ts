@@ -4,7 +4,9 @@ export interface Book {
   author: string;
   title: string;
   bookCategory: string; // Turi (Badiiy, Darslik va h.k.)
-  isbn: string; // ISBN kodi (endilikda majburiy)
+  isbn: string; // ISBN kodi (majburiy)
+  publisher: string; // Nashriyot
+  year: string; // Nashr yili
   pages: number; // Beti
   department: string; // Bo'limi
   titlesCount: number; // Nomda

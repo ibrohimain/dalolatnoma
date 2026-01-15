@@ -29,14 +29,13 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
 
   const giverTypeLabel = act.userType === 'ichki' ? 'kafedrasi' : 'tashkiloti/vakili';
 
-  // Verification QR data including ISBNs and key details for authentication
-  const bookDetails = act.books.map(b => `${b.title} (ISBN:${b.isbn})`).join(', ');
-  const qrData = `JizPI-ARM-AUTH: ACT:${act.actNumber} | DATE:${act.date} | GIVER:${act.giverName} | TOTAL:${grandTotalSum} | BOOKS:${bookDetails}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
+  // Verification URL for QR code - Links to the app with the verification ID
+  const verifyUrl = `${window.location.origin}${window.location.pathname}?verify=${act.id}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(verifyUrl)}`;
 
   return (
     <div className="bg-white p-4 md:p-12 rounded-lg shadow-inner max-w-[210mm] mx-auto overflow-hidden border mb-10 animate-fade-in no-print-margin">
-      {/* Action Bar - "Back" button removed as requested */}
+      {/* Action Bar */}
       <div className="flex justify-end items-center no-print mb-8 bg-slate-50 p-4 rounded-2xl border border-slate-200">
         <button onClick={handlePrint} className="bg-slate-900 text-white px-10 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-slate-800 transition flex items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
@@ -79,12 +78,12 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
           <p>Jizzax shahri</p>
         </div>
 
-        {/* Table including ISBN, Pages, and split counts */}
+        {/* Table including ISBN, Publisher, Year, Pages, and split counts */}
         <table className="w-full border-collapse border-[1.2px] border-black text-[9.5px] print:text-[9px] mb-8">
           <thead>
             <tr className="bg-gray-100">
               <th className="border border-black p-1 w-6 text-center">№</th>
-              <th className="border border-black p-1 text-left">Muallif, kitob nomi va turi</th>
+              <th className="border border-black p-1 text-left">Muallif, kitob nomi, turi, nashriyot va yili</th>
               <th className="border border-black p-1 w-24 text-center">ISBN</th>
               <th className="border border-black p-1 w-16 text-center">Bo'limi</th>
               <th className="border border-black p-1 w-8 text-center">Nomda</th>
@@ -98,7 +97,9 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
             {act.books.map((book, index) => (
               <tr key={index}>
                 <td className="border border-black p-1 text-center font-bold">{index + 1}</td>
-                <td className="border border-black p-1 leading-tight">{book.author} "{book.title}", {book.bookCategory}</td>
+                <td className="border border-black p-1 leading-tight">
+                  {book.author} "{book.title}", {book.bookCategory}, "{book.publisher} - {book.year}"
+                </td>
                 <td className="border border-black p-1 text-center font-mono">{book.isbn}</td>
                 <td className="border border-black p-1 text-center">{book.department}</td>
                 <td className="border border-black p-1 text-center">{book.titlesCount}</td>
@@ -132,7 +133,7 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
             </div>
             <div className="w-1/2 text-center">
               <p className="mb-1 font-bold">______________________</p>
-              <p className="text-[8px] italic text-gray-500 mb-1">(imzo)</p>
+              <p className="text-[8px] italic text-gray-400 mb-1">(imzo)</p>
               <p className="text-[12px] font-bold uppercase">M.Ortiqova</p>
             </div>
           </div>
@@ -147,13 +148,13 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
             </div>
             <div className="w-1/2 text-center">
               <p className="mb-1 font-bold">______________________</p>
-              <p className="text-[8px] italic text-gray-500 mb-1">(imzo)</p>
+              <p className="text-[8px] italic text-gray-400 mb-1">(imzo)</p>
               <p className="text-[12px] font-bold uppercase">{act.giverName || '________________'}</p>
             </div>
           </div>
         </div>
 
-        {/* Electronic Signature QR & Verification Section (Refined) */}
+        {/* Electronic Signature QR Section */}
         <div className="mt-14 flex flex-col items-center justify-center border-t border-dashed border-gray-300 pt-8">
            <div className="flex items-center gap-10">
               <div className="text-right">
@@ -165,7 +166,7 @@ const ActPreview: React.FC<ActPreviewProps> = ({ act, onBack }) => {
                 <img src={qrUrl} alt="QR Verification" className="w-24 h-24" />
               </div>
            </div>
-           <p className="text-[8px] text-gray-400 italic mt-6 text-center max-w-sm">Ushbu hujjat JizPI ARM tizimi orqali elektron shakllantirilgan. QR-kod orqali barcha ISBN ma'lumotlarini tekshirish mumkin.</p>
+           <p className="text-[8px] text-gray-400 italic mt-6 text-center max-w-sm">Ushbu hujjat JizPI ARM tizimi orqali elektron shakllantirilgan. QR-kod skanerlanganda tizimdagi asl ma'lumotlar (ISBN, Nashriyot) ko'rsatiladi.</p>
         </div>
       </div>
     </div>

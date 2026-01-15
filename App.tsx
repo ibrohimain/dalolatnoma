@@ -7,7 +7,7 @@ import ActPreview from './components/ActPreview';
 import Dashboard from './components/Dashboard';
 // import VerificationView from './components/VerificationView';
 import { Dalolatnoma } from './types';
-import { fetchDalolatnomalar } from './firebase';
+import { fetchDalolatnomalar, getActById } from './firebase';
 import VerificationView from './components/components/VerificationView';
 
 const App: React.FC = () => {
@@ -15,16 +15,8 @@ const App: React.FC = () => {
   const [selectedAct, setSelectedAct] = useState<Dalolatnoma | null>(null);
   const [editingAct, setEditingAct] = useState<Dalolatnoma | null>(null);
   const [allActs, setAllActs] = useState<Dalolatnoma[]>([]);
-  const [verifyId, setVerifyId] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Check for verification ID in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const verify = urlParams.get('verify');
-    if (verify) {
-      setVerifyId(verify);
-    }
-  }, []);
+  const [verifyingAct, setVerifyingAct] = useState<Dalolatnoma | null>(null);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const loadAllActs = async () => {
     const data = await fetchDalolatnomalar();
@@ -32,6 +24,15 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    // Check for verification ID in URL
+    const params = new URLSearchParams(window.location.search);
+    const verifyId = params.get('verify');
+    if (verifyId) {
+      setIsVerifying(true);
+      getActById(verifyId).then(act => {
+        if (act) setVerifyingAct(act as Dalolatnoma);
+      });
+    }
     loadAllActs();
   }, [activeTab, selectedAct, editingAct]);
 
@@ -52,13 +53,24 @@ const App: React.FC = () => {
     setActiveTab('list');
   };
 
-  const clearVerify = () => {
-    setVerifyId(null);
-    window.history.replaceState({}, '', window.location.pathname);
-  };
-
-  if (verifyId) {
-    return <VerificationView actId={verifyId} onClose={clearVerify} />;
+  // If in verification mode, show simplified view without navigation
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+        {verifyingAct ? (
+          <VerificationView act={verifyingAct} />
+        ) : (
+          <div className="text-center p-10 bg-white rounded-3xl shadow-xl border border-red-50">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h2 className="text-xl font-black text-slate-800 uppercase mb-2">Hujjat topilmadi</h2>
+            <p className="text-sm text-slate-400 font-medium">Ushbu QR-kodga tegishli ma'lumot tizimda mavjud emas.</p>
+          </div>
+        )}
+        <p className="mt-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">JizPI Axborot-Resurs Markazi</p>
+      </div>
+    );
   }
 
   return (
